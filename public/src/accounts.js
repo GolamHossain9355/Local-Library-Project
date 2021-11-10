@@ -3,40 +3,28 @@ function findAccountById(accounts, id) {
 }
 
 function sortAccountsByLastName(accounts) {
-  return accounts.sort((accA, accB) =>
-    accA.name.last < accB.name.last ? -1 : 1
-  );
+  return accounts.sort((accA, accB) => accA.name.last < accB.name.last ? -1 : 1
+);
 }
-//
+
 function getTotalNumberOfBorrows(account, books) {
-  let selectedId = account.id;
   return books.reduce((acc, book) => {
-    let allBorrowed = book.borrows.reduce((acc2, borrowId) => {
-      if (borrowId.id == selectedId) {
-        acc2.push(borrowId);
-      }
-      return acc2;
-    }, []);
-    return acc + allBorrowed.length;
-  }, 0);
+    if(book.borrows.find(borrow => borrow.id == account.id)) {
+      acc.push(book)
+    }
+    return acc
+  }, []).length
 }
 
 function booksCheckedOut(account, books) {
-  const selectedId = account.id;
   return books.reduce((acc, key) => {
     let borrowsArray = key.borrows;
-    let borrowedBooks = borrowsArray.some((obj) => {
-      if (!obj.returned && obj.id == selectedId) {
-        return true;
-      }
-    });
-    if (borrowedBooks) {
+    if (borrowsArray.some(obj => !obj.returned && obj.id == account.id)) {
       acc.push((key = { ...key, borrows: key.borrows[0] }));
     }
     return acc;
   }, []);
 }
-
 function getBooksPossessedByAccount(account, books, authors) {
   let borrowedBooks = booksCheckedOut(account, books);
   return borrowedBooks.reduce((acc, key) => {

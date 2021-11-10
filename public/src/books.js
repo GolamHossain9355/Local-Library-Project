@@ -7,20 +7,18 @@ function findBookById(books, id) {
 }
 
 function partitionBooksByBorrowedStatus(books) {
-  let booksCheckedOut = books.filter((book) => {
+  let booksCheckedOut = []
+  let booksReturned = []
+  let organizedByStatus = []
+  books.filter((book) => {
     let [borrowed] = book.borrows;
     if (!borrowed.returned) {
-      return book;
+      return booksCheckedOut.push(book);
+    } else {
+      return booksReturned.push(book)
     }
   });
-  let booksReturned = books.filter((book) => {
-    let [borrowed] = book.borrows;
-    if (borrowed.returned) {
-      return book;
-    }
-  });
-  let organizedByStatus = [];
-  organizedByStatus.push(booksCheckedOut, booksReturned);
+  organizedByStatus.push(booksCheckedOut, booksReturned)
   return organizedByStatus;
 }
 
@@ -30,16 +28,7 @@ function getBorrowersForBook(book, accounts) {
     let found = accounts.find((person) => person.id == key.id);
     if (acc.length < 10) {
       acc.push(
-        (found = {
-          id: found.id,
-          returned: key.returned,
-          picture: found.picture,
-          age: found.age,
-          name: found.name,
-          company: found.company,
-          email: found.email,
-          registered: found.registered,
-        })
+        (found = {...found, returned: key.returned})
       );
     }
     return acc;
