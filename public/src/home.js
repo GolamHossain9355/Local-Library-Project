@@ -56,7 +56,6 @@ function sortMostPopularToLeast(books) {
     bookA.borrows.length > bookB.borrows.length ? -1 : 1
   );
 }
-
 function getMostPopularBooks(books) {
   let popularOrganized = sortMostPopularToLeast(books);
   return popularOrganized.map(obj => {
@@ -68,51 +67,23 @@ function getMostPopularBooks(books) {
 }
 
 function counted(number) {
-  return number.reduce((acc, key) => (acc += key), 0);
+  return number.reduce((acc, key) => acc += key, 0);
 }
-
-function getBooksWithCountAdded(books) {
-  let allBoooksOrganizedAuthor = books.map(book => {
-    return book = {
-      authorId: book.authorId,
-      count: book.borrows.length
-    }
-  })
-  let authorBookCounted = allBoooksOrganizedAuthor.reduce((acc, key) => {
-    if (acc[key.authorId]) {
-      acc[key.authorId].push(key.count);
-    } else {
-      acc[key.authorId] = [key.count];
-    }
-    return acc;
-  }, {});
-  let newarray = [];
-  for (let key in authorBookCounted) {
-    newarray.push(
-      (key = {
-        authorId: key,
-        count: counted(authorBookCounted[key]),
-      })
-    );
-  }
-  return newarray.sort((authorA, authorB) =>
-    authorA.count > authorB.count ? -1 : 1
-  );
-}
-
 function getMostPopularAuthors(books, authors) {
-  let booksWithIdAndCount = getBooksWithCountAdded(books);
-  return booksWithIdAndCount.reduce((acc, key) => {
-    let foundAuthors = authors.find((obj) => obj.id == key.authorId);
-    acc.push(
-      (foundAuthors = {
-        name: `${foundAuthors.name.first} ${foundAuthors.name.last}`,
-        count: key.count,
-      })
-    );
-    return acc;
-  }, []).slice(0, 5)
+  return authors.reduce((acc, author) => {
+    let authorBooks = books.filter(book => author.id == book.authorId) 
+    let mapped = authorBooks.map(key => {
+      return key.borrows.length
+    })
+    let allCounted = counted(mapped)
+    acc.push(z = {
+      name: `${author.name.first} ${author.name.last}`,
+      count: allCounted
+    })
+    return acc
+  }, []).sort((countA, countB) => countA.count > countB.count ? -1 : 1).slice(0 , 5)
 }
+
 
 module.exports = {
   getTotalBooksCount,
