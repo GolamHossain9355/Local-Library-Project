@@ -72,18 +72,17 @@ function counted(number) {
 function getMostPopularAuthors(books, authors) {
   return authors.reduce((acc, author) => {
     let authorBooks = books.filter(book => author.id == book.authorId) 
-    let mapped = authorBooks.map(key => {
+    let organizedByAuthor = authorBooks.map(key => {
       return key.borrows.length
     })
-    let allCounted = counted(mapped)
-    acc.push(z = {
+    let allCounted = counted(organizedByAuthor)
+    acc.push({
       name: `${author.name.first} ${author.name.last}`,
       count: allCounted
     })
     return acc
   }, []).sort((countA, countB) => countA.count > countB.count ? -1 : 1).slice(0 , 5)
 }
-
 
 module.exports = {
   getTotalBooksCount,
